@@ -9,3 +9,14 @@ for cmd in curl jq; do
         exit 1
     fi
 done
+
+missing_vars=()
+[[ -z "${ASK_API_URL:-}" ]] && missing_vars+=("ASK_API_URL")
+[[ -z "${ASK_MODEL:-}"   ]] && missing_vars+=("ASK_MODEL")
+[[ -z "${ASK_API_KEY:-}" ]] && missing_vars+=("ASK_API_KEY")
+
+if (( ${#missing_vars[@]} > 0 )); then
+    echo "ask: missing required environment variable(s): ${missing_vars[*]}" >&2
+    echo "Please set ASK_API_URL, ASK_MODEL, and ASK_API_KEY." >&2
+    exit 1
+fi
