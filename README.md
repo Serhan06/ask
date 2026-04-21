@@ -9,6 +9,24 @@ Built with only `curl` and `jq` — no extra dependencies.
 - `curl`
 - `jq`
 
+### Installing `jq`
+
+**macOS**
+```bash
+brew install jq
+```
+
+**Ubuntu / Debian**
+```bash
+sudo apt install jq
+```
+
+**Windows**
+```bash
+winget install jqlang.jq --accept-source-agreements --accept-package-agreements
+```
+> After installing on Windows, open a **new terminal** so the PATH update takes effect. Run the script inside **Git Bash**, not PowerShell or CMD.
+
 ## Setup
 
 Clone the repo and make the script executable:
@@ -19,13 +37,17 @@ cd ask
 chmod +x ask
 ```
 
-Set these environment variables:
+Set these environment variables (replace the placeholders with your actual values):
 
 ```bash
 export ASK_API_URL="https://api.groq.com/openai/v1/chat/completions"
 export ASK_MODEL="llama-3.3-70b-versatile"
 export ASK_API_KEY="your-api-key-here"
 ```
+
+> You can get a free Groq API key at https://console.groq.com
+
+> **Note:** These exports last only for the current terminal session. You need to re-run them each time you open a new terminal, or add them to your shell's config file (e.g. `~/.bashrc` or `~/.zshrc`).
 
 ## Usage
 
