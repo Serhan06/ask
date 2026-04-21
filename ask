@@ -20,3 +20,25 @@ if (( ${#missing_vars[@]} > 0 )); then
     echo "Please set ASK_API_URL, ASK_MODEL, and ASK_API_KEY." >&2
     exit 1
 fi
+
+args_prompt=""
+if (( $# > 0 )); then
+    args_prompt="$*"
+fi
+
+stdin_prompt=""
+if [[ ! -t 0 ]]; then
+    stdin_prompt="$(cat)"
+fi
+
+if [[ -n "$args_prompt" && -n "$stdin_prompt" ]]; then
+    user_prompt="${args_prompt}"$'\n'"${stdin_prompt}"
+elif [[ -n "$args_prompt" ]]; then
+    user_prompt="$args_prompt"
+elif [[ -n "$stdin_prompt" ]]; then
+    user_prompt="$stdin_prompt"
+else
+    echo "ask: no prompt provided" >&2
+    echo "Usage: ask \"your prompt\"  |  echo data | ask \"context:\"" >&2
+    exit 1
+fi
