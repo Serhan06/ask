@@ -8,6 +8,7 @@ Built with only `curl` and `jq` — no extra dependencies.
 - `bash`
 - `curl`
 - `jq`
+- `make` (only needed for the pipeline — see below)
 
 ### Installing `jq`
 
@@ -26,6 +27,30 @@ sudo apt install jq
 winget install jqlang.jq --accept-source-agreements --accept-package-agreements
 ```
 > After installing on Windows, open a **new terminal** so the PATH update takes effect. Run the script inside **Git Bash**, not PowerShell or CMD.
+
+### Installing `make`
+
+**macOS** — comes pre-installed. If missing:
+```bash
+xcode-select --install
+```
+
+**Ubuntu / Debian**
+```bash
+sudo apt install make
+```
+
+**Windows** — `make` is not available in PowerShell or CMD. Use one of:
+
+- **Option A (recommended):** Install [Git for Windows](https://git-scm.com/download/win), which includes Git Bash. Then install make via winget:
+  ```bash
+  winget install GnuWin32.Make --accept-source-agreements --accept-package-agreements
+  ```
+  Open a **new Git Bash terminal** after installing so the PATH update takes effect.
+
+- **Option B:** Use [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) (Windows Subsystem for Linux) and run everything inside a Linux shell.
+
+> **Windows users:** All commands in this README (`make`, `./ask`, `export`, etc.) must be run inside **Git Bash** or **WSL** — not PowerShell or CMD.
 
 ## Setup
 
@@ -68,6 +93,31 @@ cat script.sh | ./ask "Explain what this script does:"
 alias ask-fix="./ask 'Fix any grammar or spelling errors in the following text:'"
 ask-fix "Rhythim is evrywhere"
 ```
+
+## Pipeline (make -j)
+
+The repository includes a `Makefile` and a sample `codebase.txt` that run a 5-phase LLM review pipeline and produce a final `action.plan.md`.
+
+Set the environment variables first (see Setup above), then:
+
+```bash
+# Run the full pipeline in parallel
+make -j
+
+# Remove all generated files and start fresh
+make clean
+```
+
+The pipeline produces these files in order:
+
+```
+codebase.txt
+  ├── quality.md   ──► quality.sum.md ──┐
+  ├── perf.md      ──► perf.sum.md    ──┼──► concatenated.md ──► refined.md ──► action.plan.md
+  └── security.md  ──► security.sum.md ─┘
+```
+
+Make only rebuilds what has changed — for example, if only `refined.md` is modified, only `action.plan.md` is regenerated.
 
 ## Known Limitations
 
